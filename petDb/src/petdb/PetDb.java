@@ -26,6 +26,7 @@ public class PetDb {
         // Set up variables to use in switch statement
         String selection = "";
         int count = 0;
+        int id = 0;
         
         // Print start message 
         System.out.println("Pet Database Program.");
@@ -67,12 +68,40 @@ public class PetDb {
                 // Update existing pet
                 case 3: 
                     // Show all pets, then prompt user for pet id to update
-                    System.out.println("Update pet function not implemented.");
+                    printAllPets();
+                    System.out.println();
+                    System.out.print("Enter pet ID to update: ");
+                    id = input.nextInt();
+                    input.nextLine();
+                    
+                    // Prompt user to enter new pet name and age
+                    System.out.println("Enter new name and new age: ");
+                    selection = input.nextLine().trim();
+                    
+                    // Display new pet info to user
+                    System.out.println(pets.get(id).toString() + 
+                            " changed to " + selection);
+                    String[] updatePet = selection.split(" ");
+                    
+                    // Update pet info
+                    pets.get(id).setName(updatePet[0]);
+                    pets.get(id).setAge(Integer.parseInt(updatePet[1]));
                     break;
                     
                 // Remove existing pet
                 case 4: 
-                    System.out.println("Remove pet function not implemented.");
+                    // Show all pets, then prompt user for pet id to remove
+                    printAllPets();
+                    System.out.println();
+                    System.out.print("Enter pet ID to remove: ");
+                    id = input.nextInt();
+                    input.nextLine();
+                    
+                    // Display "pet removed" message
+                    System.out.println(pets.get(id).toString() + " is removed.");
+                    
+                    // Remove pet from db
+                    pets.remove(id);
                     break;
                     
                 // Search pets by NAME
