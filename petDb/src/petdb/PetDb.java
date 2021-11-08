@@ -15,14 +15,17 @@ import java.util.Scanner;
  * @author Sienna-Rae
  */
 public class PetDb {
+    // Set up pet "database" saved in arraylist of Pet objects
+    public static ArrayList<Pet> pets = new ArrayList<>();
     
     public static void main(String[] args) {
         // Set up input variable
         Scanner input = new Scanner(System.in);
         int choice = 0;
         
-        // Set up pet "database" saved in arraylist of Pet objects
-        ArrayList<Pet> pets = new ArrayList<>();
+        // Set up variables to use in switch statement
+        String selection = "";
+        int count = 0;
         
         // Print start message 
         System.out.println("Pet Database Program.");
@@ -37,51 +40,83 @@ public class PetDb {
             switch(choice) {
                 // View all pets
                 case 1: 
-                    // Display header, display all pets, then display footer
-                    printHeader();
-                    for (int i = 0; i < pets.size(); i++) {
-                        printRow(i, pets.get(i).getName(), pets.get(i).getAge());
-                    }
-                    printFooter(pets.size());
+                    printAllPets();
                     break;
                 
                 // Add more pets
                 case 2: 
                     // Instructions
-                    System.out.println("Enter pets in 'name age' format." + 
-                            " Enter 'done' to finish");
+                    System.out.println("Enter pets in (name age) format." + 
+                            " Enter 'done' to finish.");
                     
                     // Continue to add pets until user enters "done"
-                    String selection = "";
+                    selection = "";
                     while (!selection.equals("done")) {
+                        
+                        // Add one pet at a time
                         System.out.print("Add pet (name age): ");
-                        selection = input.nextLine();
+                        selection = input.nextLine().trim();
+                        
+                        // Check if user entered "done". Continue if not
                         if (!selection.toLowerCase().equals("done")) {
-                            String[] addNew = selection.split(" ");
-                            Pet newPet = new Pet(addNew[0], Integer.parseInt(addNew[1]));
-                            pets.add(newPet);
+                            addNewPet(selection);
                         }
                     }
                     break;
                 
                 // Update existing pet
                 case 3: 
-                    System.out.println("Update pet" + " function not implemented.");
+                    // Show all pets, then prompt user for pet id to update
+                    System.out.println("Update pet function not implemented.");
                     break;
                     
                 // Remove existing pet
                 case 4: 
-                    System.out.println("Remove pet" + " function not implemented.");
+                    System.out.println("Remove pet function not implemented.");
                     break;
                     
                 // Search pets by NAME
                 case 5: 
-                    System.out.println("Search pets by name" + " function not implemented.");
+                    // Prompt user for name search criteria
+                    System.out.print("Enter a name to search: ");
+                    selection = input.nextLine().trim();
+                    
+                    // Print all applicable rows to user in addition to header and footer
+                    printHeader();
+                    // Display one row per pet for all pets
+                    count = 0;
+                    for (int i = 0; i < pets.size(); i++) {
+                        // Only print row if pet name matches user search criteria
+                        if (pets.get(i).getName().equals(selection)) {
+                            printRow(i, pets.get(i).getName(), pets.get(i).getAge());
+                            count++;
+                        }
+                    }
+                    printFooter(count);
                     break;
                     
                 // Search pets by AGE
                 case 6: 
-                    System.out.println("Search pets by age" + " function not implemented.");
+                    // Prompt user for age search criteria
+                    System.out.print("Enter an age to search: ");
+                    choice = input.nextInt();
+                    input.nextLine();
+                    
+                    // Print all applicable rows to user in addition to header and footer
+                    printHeader();
+                    // Display one row per pet for all pets
+                    count = 0;
+                    for (int i = 0; i < pets.size(); i++) {
+                        // Only print row if pet age matches user search criteria
+                        if (pets.get(i).getAge() == choice) {
+                            printRow(i, pets.get(i).getName(), pets.get(i).getAge());
+                            count++;
+                        }
+                    }
+                    printFooter(count);
+                    
+                    // reset choice value
+                    choice = 6;
                     break;
                     
                 // Exit program
@@ -91,7 +126,7 @@ public class PetDb {
                     
                 // User selected out of bounds option
                 default: 
-                    System.out.println("This function is not yet available");
+                    System.out.println("Selection is out-of-bounds. Enter a number 1-7");
                     break;
             }
         }
@@ -110,21 +145,42 @@ public class PetDb {
                 "\nYour choice: ");
     }
     
-    // Print output header
+    public static void addNewPet(String petInfo) {
+        // Save user input as array of strings
+        String[] addNew = petInfo.split(" ");
+
+        // Enter new pet into pets ArrayList
+        Pet newPet = new Pet(addNew[0], Integer.parseInt(addNew[1]));
+        pets.add(newPet);
+    }
+    
+    public static void printAllPets() {
+        // Print header
+        printHeader();
+        // Display one row per pet for all pets
+        for (int i = 0; i < pets.size(); i++) {
+            printRow(i, pets.get(i).getName(), pets.get(i).getAge());
+        }
+        
+        // Print footer 
+        printFooter(pets.size());
+    }
+    
+    // Print display header
     public static void printHeader() {
         printLine();
         System.out.printf("| %-2S | %-10S | %-3S |\n", "id", "name", "age");
         printLine();
     }
     
-    public static void printRow(int id, String name, int age) {
-        System.out.printf("| %-2S | %-10S | %-3S |\n", id, name, age);
-    }
-    
-    // Print output footer
+    // Print display footer
     public static void printFooter(int num) {
         printLine();
-        System.out.println(num + " rows in set.");
+        System.out.println(num + " row(s) in set.");
+    }
+    
+    public static void printRow(int id, String name, int age) {
+        System.out.printf("| %2d | %-10s | %3d |\n", id, name, age);
     }
     
     public static void printLine() {
