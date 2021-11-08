@@ -39,4 +39,10 @@ public class Pet {
     public void setAge(int newAge) {
         this.age = newAge;
     }
+    
+    // toString method outputs: name age
+    @Override
+    public String toString() {
+        return this.name + " " + String.valueOf(this.age);
+    }
 }
