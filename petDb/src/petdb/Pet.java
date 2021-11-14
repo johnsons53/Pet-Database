@@ -1,7 +1,8 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Sienna-Rae Johnson
+ * Fall 101 CSC 422 Software Engineering
+ * Week 1/2 Assignment: Pet Database
+ * 11/14/2021
  */
 package petdb;
 
