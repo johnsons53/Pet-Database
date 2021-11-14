@@ -1,11 +1,15 @@
 /*
  * Sienna-Rae Johnson
  * Fall 101 CSC 422 Software Engineering
- * Week 1 assignment: pet database
- * 11/07/2021
+ * Week 2 assignment: Pet Database
+ * Milestone 1: Save/Load text file
+ * 11/14/2021
  */
 package PetDb;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import petdb.Pet;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -17,6 +21,7 @@ import java.util.Scanner;
 public class PetDb {
     // Set up pet "database" saved in arraylist of Pet objects
     public static ArrayList<Pet> pets = new ArrayList<>();
+    final private static String FILENAME = "pets.txt";
     
     public static void main(String[] args) {
         // Set up input variable
@@ -30,6 +35,14 @@ public class PetDb {
         
         // Print start message 
         System.out.println("Pet Database Program.");
+        
+        // Read "pets.txt" file and save pets from file
+        try {
+            readFile();
+        }
+        catch (FileNotFoundException ex){
+            System.out.println("Exception occurred: file could not be found.");
+        }
         
         // Repeat operations until user enters 7
         while (choice != 7) {
@@ -148,8 +161,15 @@ public class PetDb {
                     choice = 6;
                     break;
                     
-                // Exit program
+                // Save pets to text file and exit program
                 case 7:
+                    try {
+                        writeFile();
+                    }
+                    catch (FileNotFoundException ex) {
+                        System.out.println("Exception occurred: file not found.");
+                    }
+                    
                     System.out.println("Goodbye!");
                     break;
                     
@@ -159,6 +179,42 @@ public class PetDb {
                     break;
             }
         }
+    }
+    
+    // Read pets.txt file and input into pets ArrayList
+    public static void readFile() throws FileNotFoundException {
+        // Read pet file using Scanner
+        Scanner readFile = new Scanner(new File(FILENAME));
+        
+        // Read all lines in file and add to pets ArrayList
+        while (readFile.hasNext()) {
+            addNewPet(readFile.nextLine().trim());
+        }
+        
+        // Close file
+        readFile.close();
+    }
+    
+    public static void writeFile() throws FileNotFoundException {
+        // Open file for writing
+        PrintWriter writeFile = new PrintWriter(FILENAME);
+        
+        // If no pets, empty file. Otherwise, write all pets to file
+        if (pets.isEmpty()) {
+            writeFile.print("");
+        }
+        else {
+            // Write pets to file
+            /* Write the first pet from pets ArrayList to file, then delete from ArrayList
+               Repeat until ArrayList is empty */
+            while (!pets.isEmpty()) {
+                writeFile.println(pets.get(0).toString());
+                pets.remove(0);
+            }
+        }
+        
+        // Close file
+        writeFile.close();
     }
     
     // Print options menu
