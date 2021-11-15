@@ -88,14 +88,18 @@ public class PetDb {
                     id = input.nextInt();
                     input.nextLine();
                     
-                    // Prompt user to enter new pet name and age
-                    System.out.print("Enter new name and new age: ");
-                    selection = input.nextLine().trim();
-                    
-                    // Update pet in database
-                    addOrUpdatePet(selection, id);
-                    
-                    
+                    // check if entered id is a valid arraylist index
+                    if (id >= 0 && id <= (pets.size()-1)) {
+                        // Prompt user to enter new pet name and age
+                        System.out.print("Enter new name and new age: ");
+                        selection = input.nextLine().trim();
+
+                        // Update pet in database
+                        addOrUpdatePet(selection, id);
+                    }
+                    else {
+                        printIndexDoesNotExistError(id);
+                    }
                     break;
                     
                 // Remove existing pet
@@ -107,11 +111,17 @@ public class PetDb {
                     id = input.nextInt();
                     input.nextLine();
                     
-                    // Display "pet removed" message
-                    System.out.println(pets.get(id).toString() + " is removed.");
+                    if (id >= 0 && id <= (pets.size()-1)) {
+                        // Display "pet removed" message
+                        System.out.println(pets.get(id).toString() + " is removed.");
+
+                        // Remove pet from db
+                        pets.remove(id);
+                    }
+                    else {
+                        printIndexDoesNotExistError(id);
+                    }
                     
-                    // Remove pet from db
-                    pets.remove(id);
                     break;
                     
                 // Search pets by NAME
@@ -288,6 +298,10 @@ public class PetDb {
     
     public static void printInputError(String input) {
         System.out.println("Error: " + input + " is not a valid input.");
+    }
+    
+    public static void printIndexDoesNotExistError(int index) {
+        System.out.println("Error: ID " + index + " does not exist.");
     }
     
     public static int stringToInt(String input) throws NumberFormatException {
