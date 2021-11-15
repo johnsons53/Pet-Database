@@ -73,8 +73,9 @@ public class PetDb {
                         
                         // Check if user entered "done". Continue if not
                         if (!selection.toLowerCase().equals("done")) {
-                            addNewPet(selection);
-                        }
+                            // Add new pet to pets arraylist (-1 means pet is not in database yet)
+                            addOrUpdatePet(selection, -1);
+                        } // end else 
                     }
                     break;
                 
@@ -88,17 +89,13 @@ public class PetDb {
                     input.nextLine();
                     
                     // Prompt user to enter new pet name and age
-                    System.out.println("Enter new name and new age: ");
+                    System.out.print("Enter new name and new age: ");
                     selection = input.nextLine().trim();
                     
-                    // Display new pet info to user
-                    System.out.println(pets.get(id).toString() + 
-                            " changed to " + selection);
-                    String[] updatePet = selection.split(" ");
+                    // Update pet in database
+                    addOrUpdatePet(selection, id);
                     
-                    // Update pet info
-                    pets.get(id).setName(updatePet[0]);
-                    pets.get(id).setAge(Integer.parseInt(updatePet[1]));
+                    
                     break;
                     
                 // Remove existing pet
@@ -188,7 +185,7 @@ public class PetDb {
         
         // Read all lines in file and add to pets ArrayList
         while (readFile.hasNext()) {
-            addNewPet(readFile.nextLine().trim());
+            loadPet(readFile.nextLine().trim());
         }
         
         // Close file
@@ -230,13 +227,71 @@ public class PetDb {
                 "\nYour choice: ");
     }
     
-    public static void addNewPet(String petInfo) {
+    public static void loadPet(String petInfo) {
         // Save user input as array of strings
         String[] addNew = petInfo.split(" ");
 
         // Enter new pet into pets ArrayList
         Pet newPet = new Pet(addNew[0], Integer.parseInt(addNew[1]));
         pets.add(newPet);
+    }
+    
+    /* Add or update pet in database. 
+     * If new pet, index = -1
+     * If updating pet, index is index of pet in database
+     */
+    public static void addOrUpdatePet(String petInfo, int index) {
+        // Check input for 2 values (user input contains space)
+        if (!petInfo.contains(" ")) {
+            printInputError(petInfo);
+        }
+        // Check for multiple spaces in input
+        else if ( petInfo.lastIndexOf(" ") != petInfo.indexOf(" ") ) {
+            printInputError(petInfo);
+        }
+        else {
+            // Save user input as array of strings
+            String[] pet = petInfo.split(" ");    
+
+            // Check age to verify that it is in integer format
+            int age = 0;
+            try {
+                // Convert age input to integer. Throw exception if unable to do so
+                age = stringToInt(pet[1]);
+
+                // Verify that age is between 1 - 20
+                if (age < 1 || age > 20) {
+                    printInputError(petInfo);
+                }
+                else {
+                    // Determine ADD PET or UPDATE PET
+                    if (index == -1) {
+                        // Enter new pet into pets ArrayList
+                        Pet newPet = new Pet(pet[0], age);
+                        pets.add(newPet);
+                    }
+                    else {
+                        // Display new pet info to user
+                        System.out.println(pets.get(index).toString() + 
+                                " changed to " + petInfo);
+                        // Update pet info
+                        pets.get(index).setName(pet[0]);
+                        pets.get(index).setAge(age);
+                    }
+                }
+            } // end try
+            catch (NumberFormatException ex) {
+                printInputError(petInfo);
+            } // end catch
+        } // end else
+    }
+    
+    public static void printInputError(String input) {
+        System.out.println("Error: " + input + " is not a valid input.");
+    }
+    
+    public static int stringToInt(String input) throws NumberFormatException {
+        return Integer.parseInt(input);
     }
     
     public static void printAllPets() {
