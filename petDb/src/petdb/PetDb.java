@@ -71,6 +71,11 @@ public class PetDb {
                         System.out.print("Add pet (name age): ");
                         selection = input.nextLine().trim();
                         
+                        if (pets.size() == 5) {
+                            System.out.println("Error: Database is full.");
+                            break;
+                        }
+                        
                         // Check if user entered "done". Continue if not
                         if (!selection.toLowerCase().equals("done")) {
                             // Add new pet to pets arraylist (-1 means pet is not in database yet)
